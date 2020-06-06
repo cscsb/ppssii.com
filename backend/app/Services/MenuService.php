@@ -191,11 +191,24 @@ class MenuService extends BaseService
     {
         $itemModel = CusToDoItemModel::find($id);
 
+        $pid  = $itemModel->pid;
+        $mid  = $itemModel->mid;
+        $sort = $itemModel->zindex;
+
         if (empty($itemModel)) {
             throw new \Exception('', 40001);
         }
 
-        return CusToDoItemModel::destroy($id);
+        CusToDoItemModel::destroy($id);
+
+        // 将大于该节点的排序 减一
+        CusToDoItemModel::where('pid', '=', $pid)
+            ->where('mid', '=', $mid)
+            ->where('zindex', '>', $sort)
+            ->decrement('zindex', 1);
+
+        return true;
+
     }
 
     /**
@@ -292,7 +305,7 @@ class MenuService extends BaseService
         CusToDoMenuModel::create($createMenuData);
 
         // 删除原子节点内容
-        CusToDoItemModel::destroy($data['itemid']);
+        $this->deleteItem($data['itemid']);
 
         return true;
 
@@ -346,17 +359,19 @@ class MenuService extends BaseService
      */
     public function updateItemSort(array $data)
     {
-        if (empty($data)) {
+        $mid       = $data['mid'] ?? 0;
+        $itemIdArr = $data['item_id_arr'] ?? [];
+
+        if (empty($itemIdArr)) {
             throw new \Exception('', 400);
         }
 
-        foreach ($data as $key => $val) {
-            $tmpItemId = $val['itemid'] ?? 0;
-            $tmpIndex  = $val['index'] ?? 0;
-            if (empty($tmpItemId)) {
-                continue;
-            }
-            CusToDoItemModel::where('id', '=', $tmpItemId)->update(['zindex' => $tmpIndex]);
+        foreach ($itemIdArr as $key => $val) {
+            $sort = $key + 1;
+
+            CusToDoItemModel::where('id', '=', $val)
+                ->where('mid', '=', $mid)
+                ->update(['zindex' => $sort]);
         }
 
         return true;
@@ -370,17 +385,18 @@ class MenuService extends BaseService
      */
     public function updateMenuSort(array $data)
     {
-        if (empty($data)) {
+        $pid    = $data['pid'] ?? 0;
+        $midArr = $data['mid_arr'] ?? [];
+
+        if (empty($midArr)) {
             throw new \Exception('', 400);
         }
 
-        foreach ($data as $key => $val) {
-            $tmpMid     = $val['mid'] ?? 0;
-            $tmpOrderId = $val['orderid'] ?? 0;
-            if (empty($tmpMid)) {
-                continue;
-            }
-            CusToDoMenuModel::where('id', '=', $tmpMid)->update(['orderid' => $tmpOrderId]);
+        foreach ($midArr as $key => $val) {
+            $sort = $key + 1;
+            CusToDoMenuModel::where('id', '=', $val)
+                ->where('pid', '=', $pid)
+                ->update(['orderid' => $sort]);
         }
 
         return true;
@@ -393,11 +409,15 @@ class MenuService extends BaseService
      */
     public function addMenu($data)
     {
+        // 查询当前用户的指定菜单下的内容数量
+        $count = CusToDoMenuModel::where('pid', '=', $data['pid'])->count();
+        $count = $count + 1;
+
         // 新增菜单数据
         $createMenuData = [
             'uid'      => $this->getUserId(),
             'username' => $this->getUsername(),
-            'orderid'  => $data['orderid'] ?? 0,
+            'orderid'  => $count,
             'name'     => $data['name'] ?? '',
             'pid'      => $data['pid'] ?? 0
         ];
@@ -413,12 +433,20 @@ class MenuService extends BaseService
     public function deleteMenu(int $id)
     {
         $menuModel = CusToDoMenuModel::find($id);
+        $pid       = $menuModel->pid;
+        $sort      = $menuModel->orderid;
 
         if (empty($menuModel)) {
             throw new \Exception('', 40002);
         }
 
-        return CusToDoMenuModel::destroy($id);
+        CusToDoMenuModel::destroy($id);
+
+        CusToDoMenuModel::where('pid', '=', $pid)
+            ->where('orderid', '>', $sort)
+            ->decrement('orderid', 1);
+
+        return true;
     }
 
     public function getUsername()
