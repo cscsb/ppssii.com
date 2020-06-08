@@ -601,7 +601,8 @@ url + 路由地址
 | mid        | int    | Y        | 父节点ID                                                     |        |
 | itemid     | int    | Y        | 子节点id                                                     |        |
 | drag_file  | string | Y        | true 拖拽的是父节点  false 拖拽的是子节点                    |        |
-| is_catalog | int    | Y        | 1、把子节点变成父节点，是在父节点新增（这个功能只在移动端适用，在web端不行） |        |
+| is_catalog | int    | Y        |//  2、把子节点拖拽到其他父节点下 //  3、把父节点拖拽到父节点下
+         |        |
 
 ```json
 {
