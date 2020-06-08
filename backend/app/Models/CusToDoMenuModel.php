@@ -36,7 +36,7 @@ class CusToDoMenuModel extends BaseModel
      */
     public function items()
     {
-        return $this->hasMany(CusToDoItemModel::class, 'mid', 'id');
+        return $this->hasMany(CusToDoItemModel::class, 'mid', 'id')->orderBy('zindex','asc');
     }
 
 
