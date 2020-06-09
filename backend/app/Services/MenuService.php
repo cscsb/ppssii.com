@@ -238,9 +238,9 @@ class MenuService extends BaseService
     {
         // 查询父节点
         $menuModel = CusToDoMenuModel::find($data['mid']);
-        if (empty($menuModel)) {
-            throw new \Exception('', 40003);
-        }
+//        if (empty($menuModel)) {
+//            throw new \Exception('', 40003);
+//        }
 
         // true拖拽的是父节点  false拖拽的是子节点
         if ($data['drag_file'] == 'true') {
