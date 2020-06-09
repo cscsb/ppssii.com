@@ -66,9 +66,10 @@ class AuthController extends BaseController
     public function login(LoginRequest $request)
     {
         $credentials = [
-            'username' => $request->input('username', ''),
+            'email'    => $request->input('username', ''),
             'password' => $request->input('password', ''),
         ];
+
         if (!$token = auth('api')->attempt($credentials)) {
             return $this->error(401);
         }
