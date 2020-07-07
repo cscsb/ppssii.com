@@ -1,0 +1,58 @@
+nz-tree {
+	overflow: hidden;
+}
+
+.custom-node {
+	cursor: pointer;
+	line-height: 24px;
+	margin-left: 4px;
+	display: inline-block;
+}
+
+:host ::ng-deep .ant-tree .ant-tree-node-content-wrapper {
+	flex-grow: 1;
+}
+
+:host ::ng-deep .ant-tree .ant-tree-node-content-wrapper :hover {
+	background: #87ceff;
+}
+
+.file-name,
+.folder-name {
+	margin-left: 4px;
+	flex-grow: 1;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 20px;
+}
+
+.file-desc,
+.folder-desc {
+	padding: 0 8px;
+	display: inline-block;
+	background: #87ceff;
+	color: #ffffff;
+	position: relative;
+	left: 12px;
+}
+
+.custom-node-icon {
+	width: 20px;
+	margin-right: 8px;
+}
+
+:host ::ng-deep .ant-btn-background-ghost.ant-btn-link {
+	color: black;
+}
+
+:host ::ng-deep .ant-btn-background-ghost.ant-btn-link:hover {
+	color: white;
+}
+:host ::ng-deep .ant-btn-background-ghost.ant-btn-link:active {
+	color: white;
+}
+
+:host ::ng-deep .ant-tree .ant-tree-treenode {
+	align-items: center;
+}
